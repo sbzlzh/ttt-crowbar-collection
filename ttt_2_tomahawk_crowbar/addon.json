@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2]Tomahawk CrowBar",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}

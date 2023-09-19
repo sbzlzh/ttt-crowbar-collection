@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2]Dualkatana/Scarlet Rose Crowbars",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}

@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+
+	"$baseTexture" "models/weapon_ttt_detective_lightsaber/glow"
+	"$translucent" "1"
+	"$glow" 1
+	"$nocull" 1
+}

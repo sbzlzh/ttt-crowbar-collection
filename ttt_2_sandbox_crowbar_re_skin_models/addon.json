@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2|Sandbox]CrowBar Re-Skin Models",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}

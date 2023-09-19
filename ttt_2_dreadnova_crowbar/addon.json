@@ -1,0 +1,20 @@
+{
+  "title": "[TTT/2]Dreadnova Crowbar",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt",
+    "*.sh",
+    "*.bat",
+    "*.7z",
+    "*.yml",
+    "copying",
+    "*.png",
+    "*.jpg"
+  ]
+}

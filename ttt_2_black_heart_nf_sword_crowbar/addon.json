@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2]Black Heart NF Sword Crowbar",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}

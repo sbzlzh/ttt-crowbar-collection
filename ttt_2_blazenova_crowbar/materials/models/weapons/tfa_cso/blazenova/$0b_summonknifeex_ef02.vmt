@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\blazenova\$0b_summonknifeex_ef02"
+    $additive        "1"
+	$nocull "1"
+}

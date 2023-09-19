@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+    "$basetexture" "vgui/killicons/tfa_cso_dark_spirit"
+    "$translucent" "1"
+}

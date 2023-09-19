@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{	
+
+        "$baseTexture" "models/weapon_ttt_detective_lightsaber/blade"
+	"$nodecal" "1"
+        "$selfillum" 1Å@
+        "$nocull" 1Å@
+}

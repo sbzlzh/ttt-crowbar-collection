@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+    "$basetexture" "vgui/ttt/icon_dreadnova"
+    "$translucent" "1"
+}

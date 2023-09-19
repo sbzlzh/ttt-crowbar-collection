@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2]Frostmourne CrowBar",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}

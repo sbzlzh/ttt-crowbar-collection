@@ -1,0 +1,13 @@
+{
+  "title": "[TTT/2]Magicknife Crowbar",
+  "type": "weapon",
+  "tags": [
+    "fun",
+    "cartoon"
+  ],
+  "ignore": [
+    "*.md",
+    "*.gitattributes",
+    "*.txt"
+  ]
+}
