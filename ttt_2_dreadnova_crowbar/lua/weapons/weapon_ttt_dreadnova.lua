@@ -49,8 +49,8 @@ SWEP.IsSilent              = true
 SWEP.AllowDelete           = false -- never removed for weapon reduction
 SWEP.AllowDrop             = false
 
-SWEP.ReloadCooldown        = 10
-SWEP.NextReloadAvailable   = 0
+SWEP.ReloadCooldown        = 10 -- R cooldown
+SWEP.NextReloadAvailable   = 0  -- Next time it can be reloaded
 
 SWEP.Offset                = {
     Pos = {
@@ -253,36 +253,54 @@ if CLIENT then
         antialias = true,
     })
 
-    function SWEP:DrawHUD()
-        self.BaseClass.DrawHUD(self)
+    hook.Add("HUDPaint", "DrawCooldownBar", function()
+        local ply = LocalPlayer()
+        local wep = ply:GetActiveWeapon()
+
+        if not IsValid(wep) or not wep.NextReloadAvailable or not wep.ReloadCooldown then return end
 
         local w, h = ScrW(), ScrH()
-        local size = 50
+        local width = 87
+        local height = 50
         local x = w * 0.9
-        local y = h * 0.9 - size
+        local y = h * 0.9 - height
+
+        local cooldownRatio = 0
+        local bgColor = Color(255, 255, 255, 150)
+
+        if CurTime() < wep.NextReloadAvailable then
+            cooldownRatio = 1 - ((wep.NextReloadAvailable - CurTime()) / wep.ReloadCooldown)
+        else
+            bgColor = Color(255, 0, 0, 150)
+        end
+
+        local fillHeight = height * cooldownRatio
+
+        surface.SetDrawColor(bgColor)
+        surface.DrawRect(x, y, width, height)
 
         surface.SetDrawColor(255, 0, 0, 150)
-        surface.DrawRect(x, y, size, size)
+        surface.DrawRect(x, y + height - fillHeight, width, fillHeight)
 
         local fontKey = "YaHeiKey"
-        local textKey = "R键"
+        local textKey = "R"
         local textColor = Color(255, 255, 255, 255)
 
         surface.SetFont(fontKey)
         local textWidthKey, textHeightKey = surface.GetTextSize(textKey)
-        draw.SimpleText(textKey, fontKey, x + size / 2 - textWidthKey / 2, y + size / 4 - textHeightKey / 2, textColor, TEXT_ALIGN_LEFT)
+        draw.SimpleText(textKey, fontKey, x + width / 2 - textWidthKey / 2, y + height / 4 - textHeightKey / 2, textColor, TEXT_ALIGN_LEFT)
 
-        if CurTime() < self.NextReloadAvailable then
-            local cooldown = math.ceil(self.NextReloadAvailable - CurTime())
-            local textCooldown = tostring(cooldown)
+        if CurTime() < wep.NextReloadAvailable then
+            local cooldown = math.ceil(wep.NextReloadAvailable - CurTime())
+            local textCooldown = "cooling time:" .. tostring(cooldown)
             local fontCooldown = "YaHeiCooldown"
 
             surface.SetFont(fontCooldown)
             local textWidthCooldown, textHeightCooldown = surface.GetTextSize(textCooldown)
 
-            draw.SimpleText(textCooldown, fontCooldown, x + size / 2 - textWidthCooldown / 2, y + 3 * size / 4 - textHeightCooldown / 2, textColor, TEXT_ALIGN_LEFT)
+            draw.SimpleText(textCooldown, fontCooldown, x + width / 2 - textWidthCooldown / 2, y + 3 * height / 4 - textHeightCooldown / 2, textColor, TEXT_ALIGN_LEFT)
         end
-    end
+    end)
 end
 
 function SWEP:Reload()
@@ -290,7 +308,7 @@ function SWEP:Reload()
     self:SetNextPrimaryFire(CurTime() + 2)
     self:SetNextSecondaryFire(CurTime() + 2)
     self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-    timer.Simple(0.8, function()
+    timer.Simple(0.6, function()
         if self:IsValid() then
             ---timer.Simple(0.8,function() if self:IsValid() and self.Owner:GetActiveWeapon():GetClass() == "tfa_cso_dark_spirit.lua" then---
             util.BlastDamage(self.Owner, self.Owner, self.Owner:GetPos(), 225, 0) --damage
@@ -311,6 +329,7 @@ function SWEP:Reload()
             util.Effect("exp_dreadnova", effectdata) -- easy effect
         end
     end)
+    self.NextReloadAvailable = CurTime() + self.ReloadCooldown
 end
 
 function SWEP:PrimaryAttack()
@@ -504,7 +523,8 @@ function SWEP:DrawWorldModel()
 end
 
 function SWEP:ApplyOffset(pos, ang)
-    pos = pos + ang:Forward() * self.Offset.Pos.Forward + ang:Right() * self.Offset.Pos.Right + ang:Up() * self.Offset.Pos.Up
+    pos = pos + ang:Forward() * self.Offset.Pos.Forward + ang:Right() * self.Offset.Pos.Right +
+        ang:Up() * self.Offset.Pos.Up
 
     ang:RotateAroundAxis(ang:Up(), self.Offset.Ang.Up)
     ang:RotateAroundAxis(ang:Right(), self.Offset.Ang.Right)
