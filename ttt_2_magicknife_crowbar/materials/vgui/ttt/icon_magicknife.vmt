@@ -1,5 +1,5 @@
 "UnlitGeneric"
 {
-    "$basetexture" "vgui/ttt/icon_magicknife"
-    "$translucent" "1"
+    "$basetexture"      "vgui/ttt/icon_magicknife"
+    "$translucent"      "1"
 }

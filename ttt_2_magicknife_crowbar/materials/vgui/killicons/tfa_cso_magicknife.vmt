@@ -1,5 +1,5 @@
 "UnlitGeneric"
 {
-    "$basetexture" "vgui/killicons/tfa_cso_magicknife"
-    "$translucent" "1"
+    "$basetexture"      "vgui/killicons/tfa_cso_magicknife"
+    "$translucent"      "1"
 }

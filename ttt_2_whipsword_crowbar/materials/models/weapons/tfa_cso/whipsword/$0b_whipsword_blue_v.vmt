@@ -1,7 +1,7 @@
 "UnLitGeneric"
 {
-    $basetexture    "models\weapons\tfa_cso\whipsword\$0b_whipsword_blue_v"
-	$nocull "1"
-	$alphatest "1"
-	$additive "1"
+    "$basetexture"      "models/weapons/tfa_cso/whipsword/$0b_whipsword_blue_v"
+    "$nocull"           "1"
+    "$alphatest"        "1"
+    "$additive"         "1"
 }

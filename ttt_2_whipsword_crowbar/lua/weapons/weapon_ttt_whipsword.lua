@@ -1,19 +1,19 @@
 if SERVER then
-	AddCSLuaFile()
-	--resource.AddWorkshop( "2851644564" )
+    AddCSLuaFile()
+    --resource.AddWorkshop( "2851644564" )
 end
 
 if CLIENT then
-	SWEP.PrintName    = "WhipSword"
+    SWEP.PrintName    = "WhipSword"
 
-	SWEP.Slot         = 0
-	SWEP.Weight       = 5
+    SWEP.Slot         = 0
+    SWEP.Weight       = 5
 
-	SWEP.Icon         = "vgui/ttt/icon_whipsword"
+    SWEP.Icon         = "vgui/ttt/icon_whipsword"
 
-	SWEP.ViewModelFOV = 85
+    SWEP.ViewModelFOV = 85
 
-	killicon.Add("tfa_cso_whipsword", "vgui/killicons/tfa_cso_whipsword", Color(255, 255, 255, 255))
+    killicon.Add("tfa_cso_whipsword", "vgui/killicons/tfa_cso_whipsword", Color(255, 255, 255, 255))
 end
 
 SWEP.HoldType              = "melee2"
@@ -54,384 +54,454 @@ SWEP.InspectionLoop        = true            --Setting false will cancel inspect
 SWEP.AllowDelete           = false           -- never removed for weapon reduction
 SWEP.AllowDrop             = false
 
+SWEP.ReloadCooldown        = 10 -- R cooldown
+SWEP.NextReloadAvailable   = 0  -- Next time it can be reloaded
+
 sound.Add({
-	['name'] = "WhipSword.Draw",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/whipsword/draw.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Draw",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/whipsword/draw.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Slash",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/whipsword/slash1.wav", "weapons/ttt/whipsword/slash2.wav",
-		"weapons/ttt/whipsword/slash3.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Slash",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/whipsword/slash1.wav", "weapons/ttt/whipsword/slash2.wav",
+        "weapons/ttt/whipsword/slash3.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Slash1_End",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/whipsword/slash1_end.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Slash1_End",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/whipsword/slash1_end.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Slash_Skill",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/whipsword/slash_skill.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Slash_Skill",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/whipsword/slash_skill.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Stab1",
-	['channel'] = CHAN_STATIC,
-	['sound'] = { "weapons/ttt/whipsword/stab1.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Stab1",
+    ['channel'] = CHAN_STATIC,
+    ['sound'] = { "weapons/ttt/whipsword/stab1.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Stab2",
-	['channel'] = CHAN_STATIC,
-	['sound'] = { "weapons/ttt/whipsword/stab2.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Stab2",
+    ['channel'] = CHAN_STATIC,
+    ['sound'] = { "weapons/ttt/whipsword/stab2.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "WhipSword.Stab12_End",
-	['channel'] = CHAN_STATIC,
-	['sound'] = { "weapons/ttt/whipsword/stab12_end.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "WhipSword.Stab12_End",
+    ['channel'] = CHAN_STATIC,
+    ['sound'] = { "weapons/ttt/whipsword/stab12_end.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "PrismSword.HitFleshSlash",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/magicknife/hit.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "PrismSword.HitFleshSlash",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/magicknife/hit.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 sound.Add({
-	['name'] = "PrismSword.HitWall",
-	['channel'] = CHAN_WEAPON,
-	['sound'] = { "weapons/ttt/magicknife/wall.wav" },
-	['pitch'] = { 100, 100 }
+    ['name'] = "PrismSword.HitWall",
+    ['channel'] = CHAN_WEAPON,
+    ['sound'] = { "weapons/ttt/magicknife/wall.wav" },
+    ['pitch'] = { 100, 100 }
 })
 
 SWEP.Offset = {
-	Pos = {
-		Up = -8,
-		Right = 2.5,
-		Forward = 3,
-	},
-	Ang = {
-		Up = -5,
-		Right = 100,
-		Forward = -60
-	},
-	Scale = 1
+    Pos = {
+        Up = -8,
+        Right = 2.5,
+        Forward = 3,
+    },
+    Ang = {
+        Up = -5,
+        Right = 100,
+        Forward = -60
+    },
+    Scale = 1
 }
 
 local sound_single = Sound("Weapon_Crowbar.Single")
 local sound_open = Sound("DoorHandles.Unlocked3")
 
-function SWEP:Reload(...)
-	if self:GetNextPrimaryFire() > CurTime() or self:GetNextSecondaryFire() > CurTime() then return end
-	self:SetNextPrimaryFire(CurTime() + 2)
-	self:SetNextSecondaryFire(CurTime() + 2)
-	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-	timer.Simple(0.8, function()
-		if self:IsValid() then
-			---timer.Simple(0.8,function() if self:IsValid() and self.Owner:GetActiveWeapon():GetClass() == "tfa_cso_dark_spirit.lua" then---
-			util.BlastDamage(self.Owner, self.Owner, self.Owner:GetPos(), 225, 0) --damage
+if CLIENT then
+    surface.CreateFont("YaHeiKey", {
+        font = "Microsoft YaHei",
+        size = 24,
+        weight = 500,
+        antialias = true,
+    })
 
-			for k, v in pairs(ents.FindInSphere(self:GetPos(), 250)) do
-				if IsValid(v) then
-					if v == self then continue end
-					if v == self.Owner then continue end
-					if v:GetMoveType() != MOVETYPE_NOCLIP and (v:IsNPC() or v:IsNextBot() or v:IsPlayer()) then
-						local dif = v:GetPos() - self:GetPos()
-						local forceApplied = (dif * 2)
-						v:SetVelocity(forceApplied + Vector(0, 0, 100))
-					end
-				end
-			end
-			local effectdata = EffectData()
-			effectdata:SetOrigin(self.Owner:GetPos())
-			util.Effect("exp_whipsword", effectdata) -- easy effect
-		end
-	end)
+    surface.CreateFont("YaHeiCooldown", {
+        font = "Microsoft YaHei",
+        size = 18,
+        weight = 500,
+        antialias = true,
+    })
+
+    hook.Add("HUDPaint", "DrawCooldownBar", function()
+        local ply = LocalPlayer()
+        local wep = ply:GetActiveWeapon()
+
+        if not IsValid(wep) or not wep.NextReloadAvailable or not wep.ReloadCooldown then return end
+
+        local w, h = ScrW(), ScrH()
+        local width = 87
+        local height = 50
+        local x = w * 0.9
+        local y = h * 0.9 - height
+
+        local cooldownRatio = 0
+        local bgColor = Color(255, 255, 255, 150)
+
+        if CurTime() < wep.NextReloadAvailable then
+            cooldownRatio = 1 - ((wep.NextReloadAvailable - CurTime()) / wep.ReloadCooldown)
+        else
+            bgColor = Color(255, 0, 0, 150)
+        end
+
+        local fillHeight = height * cooldownRatio
+
+        surface.SetDrawColor(bgColor)
+        surface.DrawRect(x, y, width, height)
+
+        surface.SetDrawColor(255, 0, 0, 150)
+        surface.DrawRect(x, y + height - fillHeight, width, fillHeight)
+
+        local fontKey = "YaHeiKey"
+        local textKey = "R"
+        local textColor = Color(255, 255, 255, 255)
+
+        surface.SetFont(fontKey)
+        local textWidthKey, textHeightKey = surface.GetTextSize(textKey)
+        draw.SimpleText(textKey, fontKey, x + width / 2 - textWidthKey / 2, y + height / 4 - textHeightKey / 2, textColor, TEXT_ALIGN_LEFT)
+
+        if CurTime() < wep.NextReloadAvailable then
+            local cooldown = math.ceil(wep.NextReloadAvailable - CurTime())
+            local textCooldown = "cooling time:" .. tostring(cooldown)
+            local fontCooldown = "YaHeiCooldown"
+
+            surface.SetFont(fontCooldown)
+            local textWidthCooldown, textHeightCooldown = surface.GetTextSize(textCooldown)
+
+            draw.SimpleText(textCooldown, fontCooldown, x + width / 2 - textWidthCooldown / 2, y + 3 * height / 4 - textHeightCooldown / 2, textColor, TEXT_ALIGN_LEFT)
+        end
+    end)
+end
+
+function SWEP:Reload()
+    if CurTime() < self.NextReloadAvailable then return end
+    self:SetNextPrimaryFire(CurTime() + 2)
+    self:SetNextSecondaryFire(CurTime() + 2)
+    self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+    timer.Simple(0.6, function()
+        if self:IsValid() then
+            ---timer.Simple(0.8,function() if self:IsValid() and self.Owner:GetActiveWeapon():GetClass() == "tfa_cso_dark_spirit.lua" then---
+            util.BlastDamage(self.Owner, self.Owner, self.Owner:GetPos(), 225, 0) --damage
+
+            for k, v in pairs(ents.FindInSphere(self:GetPos(), 250)) do
+                if IsValid(v) then
+                    if v == self then continue end
+                    if v == self.Owner then continue end
+                    if v:GetMoveType() ~= MOVETYPE_NOCLIP and (v:IsNPC() or v:IsNextBot() or v:IsPlayer()) then
+                        local dif = v:GetPos() - self:GetPos()
+                        local forceApplied = (dif * 2)
+                        v:SetVelocity(forceApplied + Vector(0, 0, 100))
+                    end
+                end
+            end
+
+            local effectdata = EffectData()
+
+            effectdata:SetOrigin(self.Owner:GetPos())
+            util.Effect("exp_whipsword", effectdata) -- easy effect
+        end
+    end)
+    self.NextReloadAvailable = CurTime() + self.ReloadCooldown
 end
 
 if SERVER then
-	CreateConVar("ttt_crowbar_unlocks", "1", FCVAR_ARCHIVE)
-	CreateConVar("ttt_crowbar_pushforce", "395", FCVAR_NOTIFY)
+    CreateConVar("ttt_crowbar_unlocks", "1", FCVAR_ARCHIVE)
+    CreateConVar("ttt_crowbar_pushforce", "395", FCVAR_NOTIFY)
 end
 
 -- only open things that have a name (and are therefore likely to be meant to
 -- open) and are the right class. Opening behaviour also differs per class, so
 -- return one of the OPEN_ values
 local function OpenableEnt(ent)
-	local cls = ent:GetClass()
-	if ent:GetName() == "" then
-		return OPEN_NO
-	elseif cls == "prop_door_rotating" then
-		return OPEN_ROT
-	elseif cls == "func_door" or cls == "func_door_rotating" then
-		return OPEN_DOOR
-	elseif cls == "func_button" then
-		return OPEN_BUT
-	elseif cls == "func_movelinear" then
-		return OPEN_NOTOGGLE
-	else
-		return OPEN_NO
-	end
+    local cls = ent:GetClass()
+    if ent:GetName() == "" then
+        return OPEN_NO
+    elseif cls == "prop_door_rotating" then
+        return OPEN_ROT
+    elseif cls == "func_door" or cls == "func_door_rotating" then
+        return OPEN_DOOR
+    elseif cls == "func_button" then
+        return OPEN_BUT
+    elseif cls == "func_movelinear" then
+        return OPEN_NOTOGGLE
+    else
+        return OPEN_NO
+    end
 end
 
 
 local function CrowbarCanUnlock(t)
-	return not GAMEMODE.crowbar_unlocks or GAMEMODE.crowbar_unlocks[t]
+    return not GAMEMODE.crowbar_unlocks or GAMEMODE.crowbar_unlocks[t]
 end
 
 -- will open door AND return what it did
 function SWEP:OpenEnt(hitEnt)
-	-- Get ready for some prototype-quality code, all ye who read this
-	if SERVER and GetConVar("ttt_crowbar_unlocks"):GetBool() then
-		local openable = OpenableEnt(hitEnt)
+    -- Get ready for some prototype-quality code, all ye who read this
+    if SERVER and GetConVar("ttt_crowbar_unlocks"):GetBool() then
+        local openable = OpenableEnt(hitEnt)
 
-		if openable == OPEN_DOOR or openable == OPEN_ROT then
-			local unlock = CrowbarCanUnlock(openable)
-			if unlock then
-				hitEnt:Fire("Unlock", nil, 0)
-			end
+        if openable == OPEN_DOOR or openable == OPEN_ROT then
+            local unlock = CrowbarCanUnlock(openable)
+            if unlock then
+                hitEnt:Fire("Unlock", nil, 0)
+            end
 
-			if unlock or hitEnt:HasSpawnFlags(256) then
-				if openable == OPEN_ROT then
-					hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
-				end
-				hitEnt:Fire("Toggle", nil, 0)
-			else
-				return OPEN_NO
-			end
-		elseif openable == OPEN_BUT then
-			if CrowbarCanUnlock(openable) then
-				hitEnt:Fire("Unlock", nil, 0)
-				hitEnt:Fire("Press", nil, 0)
-			else
-				return OPEN_NO
-			end
-		elseif openable == OPEN_NOTOGGLE then
-			if CrowbarCanUnlock(openable) then
-				hitEnt:Fire("Open", nil, 0)
-			else
-				return OPEN_NO
-			end
-		end
-		return openable
-	else
-		return OPEN_NO
-	end
+            if unlock or hitEnt:HasSpawnFlags(256) then
+                if openable == OPEN_ROT then
+                    hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
+                end
+                hitEnt:Fire("Toggle", nil, 0)
+            else
+                return OPEN_NO
+            end
+        elseif openable == OPEN_BUT then
+            if CrowbarCanUnlock(openable) then
+                hitEnt:Fire("Unlock", nil, 0)
+                hitEnt:Fire("Press", nil, 0)
+            else
+                return OPEN_NO
+            end
+        elseif openable == OPEN_NOTOGGLE then
+            if CrowbarCanUnlock(openable) then
+                hitEnt:Fire("Open", nil, 0)
+            else
+                return OPEN_NO
+            end
+        end
+        return openable
+    else
+        return OPEN_NO
+    end
 end
 
 function SWEP:PrimaryAttack()
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-	if not IsValid(self:GetOwner()) then return end
+    if not IsValid(self:GetOwner()) then return end
 
-	if self:GetOwner().LagCompensation then -- for some reason not always true
-		self:GetOwner():LagCompensation(true)
-	end
+    if self:GetOwner().LagCompensation then -- for some reason not always true
+        self:GetOwner():LagCompensation(true)
+    end
 
-	local spos = self:GetOwner():GetShootPos()
-	local sdest = spos + (self:GetOwner():GetAimVector() * 100)
+    local spos = self:GetOwner():GetShootPos()
+    local sdest = spos + (self:GetOwner():GetAimVector() * 100)
 
-	local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
-	local hitEnt = tr_main.Entity
+    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
+    local hitEnt = tr_main.Entity
 
-	--self.Weapon:EmitSound(sound_single)
+    --self.Weapon:EmitSound(sound_single)
 
-	if IsValid(hitEnt) or tr_main.HitWorld then
-		if math.random() < 0.5 then
-			self.Weapon:SendWeaponAnim(ACT_VM_HITLEFT)
-		else
-			self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
-		end
-		if not (CLIENT and (not IsFirstTimePredicted())) then
-			local edata = EffectData()
-			edata:SetStart(spos)
-			edata:SetOrigin(tr_main.HitPos)
-			edata:SetNormal(tr_main.Normal)
-			edata:SetSurfaceProp(tr_main.SurfaceProps)
-			edata:SetHitBox(tr_main.HitBox)
-			--edata:SetDamageType(DMG_CLUB)
-			edata:SetEntity(hitEnt)
+    if IsValid(hitEnt) or tr_main.HitWorld then
+        if math.random() < 0.5 then
+            self.Weapon:SendWeaponAnim(ACT_VM_HITLEFT)
+        else
+            self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
+        end
+        if not (CLIENT and (not IsFirstTimePredicted())) then
+            local edata = EffectData()
+            edata:SetStart(spos)
+            edata:SetOrigin(tr_main.HitPos)
+            edata:SetNormal(tr_main.Normal)
+            edata:SetSurfaceProp(tr_main.SurfaceProps)
+            edata:SetHitBox(tr_main.HitBox)
+            --edata:SetDamageType(DMG_CLUB)
+            edata:SetEntity(hitEnt)
 
-			if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
-				util.Effect("BloodImpact", edata)
+            if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
+                util.Effect("BloodImpact", edata)
 
-				-- does not work on players rah
-				--util.Decal("Blood", tr_main.HitPos + tr_main.HitNormal, tr_main.HitPos - tr_main.HitNormal)
+                -- does not work on players rah
+                --util.Decal("Blood", tr_main.HitPos + tr_main.HitNormal, tr_main.HitPos - tr_main.HitNormal)
 
-				-- do a bullet just to make blood decals work sanely
-				-- need to disable lagcomp because firebullets does its own
-				self:GetOwner():LagCompensation(false)
-				self:GetOwner():FireBullets({
-					Num = 1,
-					Src = spos,
-					Dir = self:GetOwner():GetAimVector(),
-					Spread = Vector(0, 0, 0),
-					Tracer = 0,
-					Force = 1,
-					Damage = 0
-				})
-			else
-				util.Effect("Impact", edata)
-			end
-		end
-	else
-		if math.random() < 0.5 then
-			self.Weapon:SendWeaponAnim(ACT_VM_HITLEFT)
-		else
-			self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
-		end
-	end
+                -- do a bullet just to make blood decals work sanely
+                -- need to disable lagcomp because firebullets does its own
+                self:GetOwner():LagCompensation(false)
+                self:GetOwner():FireBullets({
+                    Num = 1,
+                    Src = spos,
+                    Dir = self:GetOwner():GetAimVector(),
+                    Spread = Vector(0, 0, 0),
+                    Tracer = 0,
+                    Force = 1,
+                    Damage = 0
+                })
+            else
+                util.Effect("Impact", edata)
+            end
+        end
+    else
+        if math.random() < 0.5 then
+            self.Weapon:SendWeaponAnim(ACT_VM_HITLEFT)
+        else
+            self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
+        end
+    end
 
 
-	if CLIENT then
-		-- used to be some shit here
-	else -- SERVER
-		-- Do another trace that sees nodraw stuff like func_button
-		local tr_all = nil
-		tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner() })
+    if CLIENT then
+        -- used to be some shit here
+    else -- SERVER
+        -- Do another trace that sees nodraw stuff like func_button
+        local tr_all = nil
+        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner() })
 
-		self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+        self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 
-		if hitEnt and hitEnt:IsValid() then
-			if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
-				-- See if there's a nodraw thing we should open
-				self:OpenEnt(tr_all.Entity)
-			end
+        if hitEnt and hitEnt:IsValid() then
+            if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
+                -- See if there's a nodraw thing we should open
+                self:OpenEnt(tr_all.Entity)
+            end
 
-			local dmg = DamageInfo()
-			dmg:SetDamage(self.Primary.Damage)
-			dmg:SetAttacker(self:GetOwner())
-			dmg:SetInflictor(self.Weapon)
-			dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
-			dmg:SetDamagePosition(self:GetOwner():GetPos())
-			dmg:SetDamageType(DMG_CLUB)
+            local dmg = DamageInfo()
+            dmg:SetDamage(self.Primary.Damage)
+            dmg:SetAttacker(self:GetOwner())
+            dmg:SetInflictor(self.Weapon)
+            dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
+            dmg:SetDamagePosition(self:GetOwner():GetPos())
+            dmg:SetDamageType(DMG_CLUB)
 
-			hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
+            hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
 
-			--         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
+            --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 
-			--         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
-			--         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
-		else
-			--         if tr_main.HitWorld then
-			--            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-			--         else
-			--            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
-			--         end
+            --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
+            --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
+        else
+            --         if tr_main.HitWorld then
+            --            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
+            --         else
+            --            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+            --         end
 
-			-- See if our nodraw trace got the goods
-			if tr_all.Entity and tr_all.Entity:IsValid() then
-				self:OpenEnt(tr_all.Entity)
-			end
-		end
-	end
+            -- See if our nodraw trace got the goods
+            if tr_all.Entity and tr_all.Entity:IsValid() then
+                self:OpenEnt(tr_all.Entity)
+            end
+        end
+    end
 
-	if self:GetOwner().LagCompensation then
-		self:GetOwner():LagCompensation(false)
-	end
+    if self:GetOwner().LagCompensation then
+        self:GetOwner():LagCompensation(false)
+    end
 end
 
 function SWEP:SecondaryAttack()
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
+    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
 
-	if self:GetOwner().LagCompensation then
-		self:GetOwner():LagCompensation(true)
-	end
+    if self:GetOwner().LagCompensation then
+        self:GetOwner():LagCompensation(true)
+    end
 
-	local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
+    local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
 
-	if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
-		local ply = tr.Entity
+    if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
+        local ply = tr.Entity
 
-		if SERVER and (not ply:IsFrozen()) then
-			local pushvel = tr.Normal * GetConVar("ttt_crowbar_pushforce"):GetFloat()
+        if SERVER and (not ply:IsFrozen()) then
+            local pushvel = tr.Normal * GetConVar("ttt_crowbar_pushforce"):GetFloat()
 
-			-- limit the upward force to prevent launching
-			pushvel.z = math.Clamp(pushvel.z, 50, 100)
+            -- limit the upward force to prevent launching
+            pushvel.z = math.Clamp(pushvel.z, 50, 100)
 
-			ply:SetVelocity(ply:GetVelocity() + pushvel)
-			self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+            ply:SetVelocity(ply:GetVelocity() + pushvel)
+            self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 
-			ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
-		end
+            ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
+        end
 
-		--self.Weapon:EmitSound(sound_single)
-		self.Weapon:SendWeaponAnim(ACT_VM_MISSLEFT)
+        --self.Weapon:EmitSound(sound_single)
+        self.Weapon:SendWeaponAnim(ACT_VM_MISSLEFT)
 
-		self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
-	end
+        self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+    end
 
-	if self:GetOwner().LagCompensation then
-		self:GetOwner():LagCompensation(false)
-	end
+    if self:GetOwner().LagCompensation then
+        self:GetOwner():LagCompensation(false)
+    end
 end
 
 function SWEP:GetClass()
-	return "weapon_ttt_whipsword"
+    return "weapon_ttt_whipsword"
 end
 
 function SWEP:OnDrop()
-	self:Remove()
+    self:Remove()
 end
 
 SWEP.InspectionActions = { ACT_VM_RECOIL1 }
 
 DEFINE_BASECLASS(SWEP.Base)
 function SWEP:Holster(...)
-	self:StopSound("Hellfire.Idle")
-	return BaseClass.Holster(self, ...)
+    self:StopSound("Hellfire.Idle")
+    return BaseClass.Holster(self, ...)
 end
 
 if CLIENT then
-	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_whipsword")
-	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
+    SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_whipsword")
+    SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
 end
 
 function SWEP:DrawWorldModel()
-	local hand, offset, rotate
+    local hand, offset, rotate
 
-	local pl = self:GetOwner()
+    local pl = self:GetOwner()
 
-	if IsValid(pl) then
-		local boneIndex = pl:LookupBone("ValveBiped.Bip01_R_Hand")
-		if boneIndex then
-			local pos, ang = pl:GetBonePosition(boneIndex)
+    if IsValid(pl) then
+        local boneIndex = pl:LookupBone("ValveBiped.Bip01_R_Hand")
+        if boneIndex then
+            local pos, ang = pl:GetBonePosition(boneIndex)
 
-			pos, ang = self:ApplyOffset(pos, ang)
+            pos, ang = self:ApplyOffset(pos, ang)
 
-			self:SetRenderOrigin(pos)
-			self:SetRenderAngles(ang)
-			self:DrawModel()
-		end
-	else
-		self:SetRenderOrigin(nil)
-		self:SetRenderAngles(nil)
-		self:DrawModel()
-	end
+            self:SetRenderOrigin(pos)
+            self:SetRenderAngles(ang)
+            self:DrawModel()
+        end
+    else
+        self:SetRenderOrigin(nil)
+        self:SetRenderAngles(nil)
+        self:DrawModel()
+    end
 end
 
 function SWEP:ApplyOffset(pos, ang)
-	pos = pos + ang:Forward() * self.Offset.Pos.Forward + ang:Right() * self.Offset.Pos.Right +
-		ang:Up() * self.Offset.Pos.Up
+    pos = pos + ang:Forward() * self.Offset.Pos.Forward + ang:Right() * self.Offset.Pos.Right + ang:Up() * self.Offset.Pos.Up
 
-	ang:RotateAroundAxis(ang:Up(), self.Offset.Ang.Up)
-	ang:RotateAroundAxis(ang:Right(), self.Offset.Ang.Right)
-	ang:RotateAroundAxis(ang:Forward(), self.Offset.Ang.Forward)
+    ang:RotateAroundAxis(ang:Up(), self.Offset.Ang.Up)
+    ang:RotateAroundAxis(ang:Right(), self.Offset.Ang.Right)
+    ang:RotateAroundAxis(ang:Forward(), self.Offset.Ang.Forward)
 
-	return pos, ang
+    return pos, ang
 end

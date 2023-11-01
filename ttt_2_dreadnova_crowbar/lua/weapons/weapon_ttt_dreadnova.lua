@@ -324,7 +324,9 @@ function SWEP:Reload()
                     end
                 end
             end
+
             local effectdata = EffectData()
+
             effectdata:SetOrigin(self.Owner:GetPos())
             util.Effect("exp_dreadnova", effectdata) -- easy effect
         end

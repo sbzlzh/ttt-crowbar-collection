@@ -1,5 +1,5 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "models/knife"
-	"$basetexture2" "models/tred"
+    "$basetexture"      "models/knife"
+    "$basetexture2"     "models/tred"
 }

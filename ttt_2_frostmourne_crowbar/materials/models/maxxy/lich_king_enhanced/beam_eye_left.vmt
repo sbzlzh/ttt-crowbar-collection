@@ -1,18 +1,17 @@
 "UnlitTwoTexture"
 {
-	"$basetexture"	"models\maxxy\lich_king_enhanced\smoke_eye_bg"
-	"$texture2" "models\maxxy\lich_king_enhanced\smoke_eye"
- 	"$model" 1
-	"$nocull" "1"
-	"$additive" "1"
-	"Proxies"
-	{
- 
-		"TextureScroll"
-		{
-			"texturescrollvar" "$texture2transform"
-			"texturescrollrate" -.2
-			"texturescrollangle" 180
-		}
-	}
+    "$basetexture"      "models/maxxy/lich_king_enhanced/smoke_eye_bg"
+    "$texture2"         "models/maxxy/lich_king_enhanced/smoke_eye"
+    "$model"            "1"
+    "$nocull"           "1"
+    "$additive"         "1"
+    "Proxies"
+    {
+        "TextureScroll"
+        {
+            "texturescrollvar"          "$texture2transform"
+            "texturescrollrate"         "-.2"
+            "texturescrollangle"        "180"
+        }
+    }
 }

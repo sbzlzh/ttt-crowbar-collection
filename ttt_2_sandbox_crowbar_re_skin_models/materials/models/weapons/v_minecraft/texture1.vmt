@@ -1,5 +1,4 @@
 "VertexLitGeneric"
 {
-	"$basetexture" "models/Weapons/V_minecraft/texture1"
-  
+    "$basetexture"      "models/weapons/v_minecraft/texture1"
 }
