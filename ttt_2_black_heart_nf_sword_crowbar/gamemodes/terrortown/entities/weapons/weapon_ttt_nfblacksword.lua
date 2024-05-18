@@ -1,32 +1,44 @@
 if SERVER then
     AddCSLuaFile()
-    --resource.AddWorkshop("2797966239")
+    --resource.AddWorkshop( "2861282252" )
 end
 
 if CLIENT then
-    SWEP.PrintName    = "Frostmourne"
+    SWEP.PrintName     = "Black Heart NF Sword"
 
-    SWEP.Slot         = 0
+    SWEP.Slot          = 0
+    SWEP.Weight        = 5
+    SWEP.WepSelectIcon = surface.GetTextureID("effects/killicons/weapon_blackheartsword")
 
-    SWEP.Icon         = "vgui/ttt/icon_frostmourne"
-    SWEP.ViewModelFOV = 85
+
+    killicon.Add("weapon_nfblacksword", "effects/killicons/weapon_blackheartsword", color_white)
+
+    SWEP.Icon         = "effects/killicons/weapon_blackheartsword"
+
+    SWEP.ViewModelFOV = 75
 end
 
-SWEP.HoldType              = "melee"
+SWEP.HoldType              = "melee2"
 
 SWEP.UseHands              = true
+
 SWEP.Base                  = "weapon_tttbase"
-SWEP.ViewModel             = Model("models/weapons/v_frostmourne.mdl")
-SWEP.WorldModel            = Model("models/weapons/w_frostmourne.mdl")
-SWEP.Weight                = 5
+
+SWEP.ViewModel             = "models/weapons/v_NF_Black_sword2.mdl"
+SWEP.WorldModel            = "models/weapons/w_NF_Black_sword11.mdl"
+
 SWEP.DrawCrosshair         = false
 SWEP.ViewModelFlip         = false
+
+SWEP.Primary.Sound         = Sound("common/null.wav")
+
 SWEP.Primary.Damage        = 20
 SWEP.Primary.ClipSize      = -1
 SWEP.Primary.DefaultClip   = -1
 SWEP.Primary.Automatic     = true
 SWEP.Primary.Delay         = 0.5
 SWEP.Primary.Ammo          = "none"
+
 SWEP.Secondary.ClipSize    = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic   = true
@@ -40,7 +52,11 @@ SWEP.InLoadoutFor          = { nil } --{ ROLE_TRAITOR,ROLE_DETECTIVE,ROLE_INNOCE
 SWEP.NoSights              = true
 SWEP.IsSilent              = true
 
-SWEP.AllowDelete           = false -- never removed for weapon reduction
+SWEP.InspectPos            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights position, to be used for inspection
+SWEP.InspectAng            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights angle, to be used for inspection
+
+SWEP.InspectionLoop        = true            --Setting false will cancel inspection once the animation is done.  CS:GO style.
+SWEP.AllowDelete           = false           -- never removed for weapon reduction
 SWEP.AllowDrop             = false
 
 local sound_single         = Sound("Weapon_Crowbar.Single")
@@ -131,13 +147,17 @@ function SWEP:PrimaryAttack()
     local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
     local hitEnt = tr_main.Entity
 
-    self.Weapon:EmitSound(sound_single)
+
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        if math.random() < 0.5 then
+            self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+        else
+            self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
+        end
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
+            self.Owner:EmitSound("weapons/samurai/tf_katana_impact_object_0" .. math.random(1, 3) .. ".wav")
             edata:SetStart(spos)
             edata:SetOrigin(tr_main.HitPos)
             edata:SetNormal(tr_main.Normal)
@@ -169,7 +189,12 @@ function SWEP:PrimaryAttack()
             end
         end
     else
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self:EmitSound("weapons/samurai/tf_katana_0" .. math.random(1, 6) .. ".wav")
+        if math.random() < 0.5 then
+            self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+        else
+            self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
+        end
     end
 
 
@@ -223,7 +248,7 @@ end
 
 function SWEP:SecondaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-    self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
+    self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
 
     if self:GetOwner().LagCompensation then
         self:GetOwner():LagCompensation(true)
@@ -246,8 +271,8 @@ function SWEP:SecondaryAttack()
             ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
         end
 
-        self.Weapon:EmitSound(sound_single)
-        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+        self:EmitSound("weapons/samurai/tf_katana_0" .. math.random(1, 6) .. ".wav")
+        self.Weapon:SendWeaponAnim(ACT_VM_SWINGHARD)
 
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
@@ -258,21 +283,9 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:GetClass()
-    return "weapon_ttt_frost"
+    return "weapon_ttt_nfblacksword"
 end
 
 function SWEP:OnDrop()
     self:Remove()
-end
-
-SWEP.InspectionActions = { ACT_VM_RECOIL1 }
-
-DEFINE_BASECLASS(SWEP.Base)
-function SWEP:Holster(...)
-    self:StopSound("Hellfire.Idle")
-    return BaseClass.Holster(self, ...)
-end
-
-if CLIENT then
-    SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_dreadnova")
 end

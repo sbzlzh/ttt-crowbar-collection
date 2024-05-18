@@ -1,23 +1,23 @@
 if SERVER then
     AddCSLuaFile()
-    --resource.AddWorkshop("2797966239")
+    --resource.AddWorkshop( "2797965198" )
 end
 
 if CLIENT then
-    SWEP.PrintName    = "Frostmourne"
+    SWEP.PrintName    = "Real Knife"
 
     SWEP.Slot         = 0
 
-    SWEP.Icon         = "vgui/ttt/icon_frostmourne"
+    SWEP.Icon         = "vgui/ttt/icon_real_knife_no_laugh"
     SWEP.ViewModelFOV = 85
 end
 
-SWEP.HoldType              = "melee"
+SWEP.HoldType              = "melee2"
 
 SWEP.UseHands              = true
 SWEP.Base                  = "weapon_tttbase"
-SWEP.ViewModel             = Model("models/weapons/v_frostmourne.mdl")
-SWEP.WorldModel            = Model("models/weapons/w_frostmourne.mdl")
+SWEP.ViewModel             = "models/c_real_knife.mdl"
+SWEP.WorldModel            = "models/c_real_knife.mdl"
 SWEP.Weight                = 5
 SWEP.DrawCrosshair         = false
 SWEP.ViewModelFlip         = false
@@ -39,21 +39,17 @@ SWEP.WeaponID              = AMMO_CROWBAR
 SWEP.InLoadoutFor          = { nil } --{ ROLE_TRAITOR,ROLE_DETECTIVE,ROLE_INNOCENT }
 SWEP.NoSights              = true
 SWEP.IsSilent              = true
-
-SWEP.AllowDelete           = false -- never removed for weapon reduction
+SWEP.InspectPos            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights position, to be used for inspection
+SWEP.InspectAng            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights angle, to be used for inspection
+SWEP.AllowDelete           = false           -- never removed for weapon reduction
 SWEP.AllowDrop             = false
 
 local sound_single         = Sound("Weapon_Crowbar.Single")
 local sound_open           = Sound("DoorHandles.Unlocked3")
-
 if SERVER then
     CreateConVar("ttt_crowbar_unlocks", "1", FCVAR_ARCHIVE)
     CreateConVar("ttt_crowbar_pushforce", "395", FCVAR_NOTIFY)
 end
-
--- only open things that have a name (and are therefore likely to be meant to
--- open) and are the right class. Opening behaviour also differs per class, so
--- return one of the OPEN_ values
 local function OpenableEnt(ent)
     local cls = ent:GetClass()
     if ent:GetName() == "" then
@@ -75,8 +71,10 @@ end
 local function CrowbarCanUnlock(t)
     return not GAMEMODE.crowbar_unlocks or GAMEMODE.crowbar_unlocks[t]
 end
+function SWEP:Initialize()
+    self:SetWeaponHoldType("knife")
+end
 
--- will open door AND return what it did
 function SWEP:OpenEnt(hitEnt)
     -- Get ready for some prototype-quality code, all ye who read this
     if SERVER and GetConVar("ttt_crowbar_unlocks"):GetBool() then
@@ -131,11 +129,11 @@ function SWEP:PrimaryAttack()
     local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
     local hitEnt = tr_main.Entity
 
-    self.Weapon:EmitSound(sound_single)
+    self.Weapon:EmitSound(Sound("attak.wav"));
 
     if IsValid(hitEnt) or tr_main.HitWorld then
         self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
             edata:SetStart(spos)
@@ -169,7 +167,7 @@ function SWEP:PrimaryAttack()
             end
         end
     else
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
     end
 
 
@@ -198,16 +196,16 @@ function SWEP:PrimaryAttack()
 
             hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
 
-            --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
+            self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
 
             --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
             --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
         else
-            --         if tr_main.HitWorld then
-            --            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-            --         else
-            --            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
-            --         end
+            if tr_main.HitWorld then
+                self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+            else
+                self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+            end
 
             -- See if our nodraw trace got the goods
             if tr_all.Entity and tr_all.Entity:IsValid() then
@@ -223,7 +221,7 @@ end
 
 function SWEP:SecondaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-    self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
+    self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
 
     if self:GetOwner().LagCompensation then
         self:GetOwner():LagCompensation(true)
@@ -246,7 +244,7 @@ function SWEP:SecondaryAttack()
             ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
         end
 
-        self.Weapon:EmitSound(sound_single)
+        self.Owner:EmitSound(Sound("attak.wav"));
         self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
 
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
@@ -257,22 +255,6 @@ function SWEP:SecondaryAttack()
     end
 end
 
-function SWEP:GetClass()
-    return "weapon_ttt_frost"
-end
-
 function SWEP:OnDrop()
     self:Remove()
-end
-
-SWEP.InspectionActions = { ACT_VM_RECOIL1 }
-
-DEFINE_BASECLASS(SWEP.Base)
-function SWEP:Holster(...)
-    self:StopSound("Hellfire.Idle")
-    return BaseClass.Holster(self, ...)
-end
-
-if CLIENT then
-    SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_dreadnova")
 end

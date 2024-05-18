@@ -1,9 +1,8 @@
 if CLIENT then
-    print("")
     hook.Add("Tick", "nfblacksword", function()
         for _, ply in pairs(player.GetAll()) do
             if (ply:GetActiveWeapon():IsValid()) then
-                if (ply:GetActiveWeapon():GetClass() == "weapon_nfblacksword" or ply:GetActiveWeapon():GetClass() == "weapon_ttt_nfblacksword") then
+                if (ply:GetActiveWeapon():GetClass() == "weapon_ttt_nfblacksword") then
                     local pos = ply:EyePos()
                     local ang = ply:EyeAngles()
                     local light = DynamicLight(ply:EntIndex())

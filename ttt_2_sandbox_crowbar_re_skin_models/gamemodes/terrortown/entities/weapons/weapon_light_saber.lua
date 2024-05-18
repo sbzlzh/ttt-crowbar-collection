@@ -1,23 +1,23 @@
 if SERVER then
     AddCSLuaFile()
-    --resource.AddWorkshop("2797966239")
 end
 
 if CLIENT then
-    SWEP.PrintName    = "Frostmourne"
+    SWEP.PrintName    = "Light Saber"
 
     SWEP.Slot         = 0
 
-    SWEP.Icon         = "vgui/ttt/icon_frostmourne"
-    SWEP.ViewModelFOV = 85
+    SWEP.Icon         = "vgui/ttt/icon_lightsaber"
+    SWEP.ViewModelFOV = 54
 end
 
 SWEP.HoldType              = "melee"
 
 SWEP.UseHands              = true
-SWEP.Base                  = "weapon_tttbase"
-SWEP.ViewModel             = Model("models/weapons/v_frostmourne.mdl")
-SWEP.WorldModel            = Model("models/weapons/w_frostmourne.mdl")
+SWEP.Category              = "sbzl's Weapons"
+SWEP.Spawnable             = true
+SWEP.ViewModel             = "models/weapons/v_crewbar.mdl"
+SWEP.WorldModel            = "models/weapons/w_ttt_lightsaber_jedi.mdl"
 SWEP.Weight                = 5
 SWEP.DrawCrosshair         = false
 SWEP.ViewModelFlip         = false
@@ -36,15 +36,30 @@ SWEP.Secondary.Delay       = 5
 SWEP.Kind                  = WEAPON_MELEE
 SWEP.WeaponID              = AMMO_CROWBAR
 
-SWEP.InLoadoutFor          = { nil } --{ ROLE_TRAITOR,ROLE_DETECTIVE,ROLE_INNOCENT }
-SWEP.NoSights              = true
-SWEP.IsSilent              = true
+SWEP.InLoadoutFor = { nil }
 
-SWEP.AllowDelete           = false -- never removed for weapon reduction
-SWEP.AllowDrop             = false
+SWEP.NoSights = true
+SWEP.IsSilent = true
 
-local sound_single         = Sound("Weapon_Crowbar.Single")
-local sound_open           = Sound("DoorHandles.Unlocked3")
+SWEP.AutoSpawnable = false
+
+SWEP.AllowDelete = false -- never removed for weapon reduction
+SWEP.AllowDrop = false
+SWEP.Offset = {
+    Pos = {
+        Up = -22,
+        Right = 1,
+        Forward = 6,
+    },
+    Ang = {
+        Up = -20,
+        Right = 190,
+        Forward = -5
+    },
+    Scale = 1
+}
+local sound_single = Sound("Weapon_Crowbar.Single")
+local sound_open = Sound("DoorHandles.Unlocked3")
 
 if SERVER then
     CreateConVar("ttt_crowbar_unlocks", "1", FCVAR_ARCHIVE)
@@ -90,7 +105,7 @@ function SWEP:OpenEnt(hitEnt)
 
             if unlock or hitEnt:HasSpawnFlags(256) then
                 if openable == OPEN_ROT then
-                    hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
+                    hitEnt:Fire("OpenAwayFrom", self.Owner, 0)
                 end
                 hitEnt:Fire("Toggle", nil, 0)
             else
@@ -119,23 +134,23 @@ end
 function SWEP:PrimaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    if not IsValid(self:GetOwner()) then return end
+    if not IsValid(self.Owner) then return end
 
-    if self:GetOwner().LagCompensation then -- for some reason not always true
-        self:GetOwner():LagCompensation(true)
+    if self.Owner.LagCompensation then -- for some reason not always true
+        self.Owner:LagCompensation(true)
     end
 
-    local spos = self:GetOwner():GetShootPos()
-    local sdest = spos + (self:GetOwner():GetAimVector() * 100)
+    local spos = self.Owner:GetShootPos()
+    local sdest = spos + (self.Owner:GetAimVector() * 70)
 
-    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
+    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self.Owner, mask = MASK_SHOT_HULL })
     local hitEnt = tr_main.Entity
 
-    self.Weapon:EmitSound(sound_single)
+    self.Weapon:EmitSound("weapons/ls/lightsaber_swing.wav")
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
             edata:SetStart(spos)
@@ -154,11 +169,11 @@ function SWEP:PrimaryAttack()
 
                 -- do a bullet just to make blood decals work sanely
                 -- need to disable lagcomp because firebullets does its own
-                self:GetOwner():LagCompensation(false)
-                self:GetOwner():FireBullets({
+                self.Owner:LagCompensation(false)
+                self.Owner:FireBullets({
                     Num = 1,
                     Src = spos,
-                    Dir = self:GetOwner():GetAimVector(),
+                    Dir = self.Owner:GetAimVector(),
                     Spread = Vector(0, 0, 0),
                     Tracer = 0,
                     Force = 1,
@@ -178,9 +193,9 @@ function SWEP:PrimaryAttack()
     else -- SERVER
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
-        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner() })
+        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self.Owner })
 
-        self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+        self.Owner:SetAnimation(PLAYER_ATTACK1)
 
         if hitEnt and hitEnt:IsValid() then
             if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
@@ -190,18 +205,18 @@ function SWEP:PrimaryAttack()
 
             local dmg = DamageInfo()
             dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(self:GetOwner())
+            dmg:SetAttacker(self.Owner)
             dmg:SetInflictor(self.Weapon)
-            dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
-            dmg:SetDamagePosition(self:GetOwner():GetPos())
+            dmg:SetDamageForce(self.Owner:GetAimVector() * 1500)
+            dmg:SetDamagePosition(self.Owner:GetPos())
             dmg:SetDamageType(DMG_CLUB)
 
-            hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
+            hitEnt:DispatchTraceAttack(dmg, spos + (self.Owner:GetAimVector() * 3), sdest)
 
             --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 
-            --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
-            --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
+            --         self.Owner:TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
+            --         self.Owner:FireBullets({Num=1, Src=spos, Dir=self.Owner:GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
         else
             --         if tr_main.HitWorld then
             --            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
@@ -216,8 +231,8 @@ function SWEP:PrimaryAttack()
         end
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
+    if self.Owner.LagCompensation then
+        self.Owner:LagCompensation(false)
     end
 end
 
@@ -225,13 +240,13 @@ function SWEP:SecondaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
     self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(true)
+    if self.Owner.LagCompensation then
+        self.Owner:LagCompensation(true)
     end
 
-    local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
+    local tr = self.Owner:GetEyeTrace(MASK_SHOT)
 
-    if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
+    if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self.Owner:EyePos() - tr.HitPos):Length() < 100 then
         local ply = tr.Entity
 
         if SERVER and (not ply:IsFrozen()) then
@@ -241,9 +256,9 @@ function SWEP:SecondaryAttack()
             pushvel.z = math.Clamp(pushvel.z, 50, 100)
 
             ply:SetVelocity(ply:GetVelocity() + pushvel)
-            self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+            self.Owner:SetAnimation(PLAYER_ATTACK1)
 
-            ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
+            ply.was_pushed = { att = self.Owner, t = CurTime() } --, infl=self}
         end
 
         self.Weapon:EmitSound(sound_single)
@@ -252,27 +267,90 @@ function SWEP:SecondaryAttack()
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
+    if self.Owner.LagCompensation then
+        self.Owner:LagCompensation(false)
     end
 end
 
 function SWEP:GetClass()
-    return "weapon_ttt_frost"
+    return "weapon_light_saber"
 end
 
 function SWEP:OnDrop()
     self:Remove()
 end
 
-SWEP.InspectionActions = { ACT_VM_RECOIL1 }
-
-DEFINE_BASECLASS(SWEP.Base)
-function SWEP:Holster(...)
-    self:StopSound("Hellfire.Idle")
-    return BaseClass.Holster(self, ...)
+local gm = engine.ActiveGamemode()
+if string.find(gm, "terrortown") then
+    SWEP.Base = "weapon_tttbase"
+    DEFINE_BASECLASS("weapon_tttbase")
 end
 
-if CLIENT then
-    SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_dreadnova")
+local gm = engine.ActiveGamemode()
+if string.find(gm, "sandbox") then
+    SWEP.Base = "weapon_base"
+    DEFINE_BASECLASS("weapon_base")
+end
+
+if (SERVER) then return end
+
+killicon.Add("weapon_light_saber", "vgui/ttt/icon_lightsaber", color_white)
+
+function SWEP:DrawWorldModel()
+    local hand, offset, rotate
+
+    if not IsValid(self.Owner) then
+        self:DrawModel()
+        return
+    end
+
+    if not self.Hand then
+        self.Hand = self.Owner:LookupAttachment("anim_attachment_rh")
+    end
+
+    hand = self.Owner:GetAttachment(self.Hand)
+
+    if not hand then
+        self:DrawModel()
+        return
+    end
+
+    offset = hand.Ang:Right() * self.Offset.Pos.Right + hand.Ang:Forward() * self.Offset.Pos.Forward +
+        hand.Ang:Up() * self.Offset.Pos.Up
+
+    hand.Ang:RotateAroundAxis(hand.Ang:Right(), self.Offset.Ang.Right)
+    hand.Ang:RotateAroundAxis(hand.Ang:Forward(), self.Offset.Ang.Forward)
+    hand.Ang:RotateAroundAxis(hand.Ang:Up(), self.Offset.Ang.Up)
+
+    self:SetRenderOrigin(hand.Pos + offset)
+    self:SetRenderAngles(hand.Ang)
+
+    self:DrawModel()
+end
+
+function SWEP:DrawWorldModel()
+    local hand, offset, rotate
+
+    local pl = self:GetOwner()
+
+    if IsValid(pl) then
+        local boneIndex = pl:LookupBone("ValveBiped.Bip01_R_Hand")
+        if boneIndex then
+            local pos, ang = pl:GetBonePosition(boneIndex)
+            pos = pos + ang:Forward() * self.Offset.Pos.Forward + ang:Right() * self.Offset.Pos.Right +
+                ang:Up() * self.Offset.Pos.Up
+
+            ang:RotateAroundAxis(ang:Up(), self.Offset.Ang.Up)
+            ang:RotateAroundAxis(ang:Right(), self.Offset.Ang.Right)
+            ang:RotateAroundAxis(ang:Forward(), self.Offset.Ang.Forward)
+
+            self:SetRenderOrigin(pos)
+            self:SetRenderAngles(ang)
+            self:DrawModel()
+        end
+    else
+        self:SetRenderOrigin(nil)
+        self:SetRenderAngles(nil)
+        self:DrawModel()
+    end
 end
