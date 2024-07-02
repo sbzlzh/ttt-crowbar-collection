@@ -312,8 +312,7 @@ function SWEP:PrimaryAttack()
 
     local hitEnt = tr_main.Entity
     local owner = self:GetOwner()
-    if not IsValid(owner) then return end
-    self.Weapon:EmitSound(sound_single)
+    if CLIENT and owner:ShouldDrawLocalPlayer() then self.Weapon:EmitSound(sound_single) end
     owner:SetAnimation(PLAYER_ATTACK1)
     -- Randomly choose an animation
     if rand == 1 then
@@ -327,6 +326,16 @@ function SWEP:PrimaryAttack()
     end
 
     if IsValid(hitEnt) or tr_main.HitWorld then
+        if SERVER then
+            local dmg = DamageInfo()
+            dmg:SetDamage(self.Primary.Damage)
+            dmg:SetAttacker(owner)
+            dmg:SetInflictor(self)
+            dmg:SetDamageForce(owner:GetAimVector() * 1500)
+            dmg:SetDamageType(DMG_SLASH)
+            hitEnt:TakeDamageInfo(dmg)
+        end
+
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
             edata:SetStart(spos)
@@ -334,14 +343,10 @@ function SWEP:PrimaryAttack()
             edata:SetNormal(tr_main.Normal)
             edata:SetSurfaceProp(tr_main.SurfaceProps)
             edata:SetHitBox(tr_main.HitBox)
-            --edata:SetDamageType(DMG_CLUB)
             edata:SetEntity(hitEnt)
             if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
                 util.Effect("BloodImpact", edata)
-                -- does not work on players rah
-                --util.Decal("Blood", tr_main.HitPos + tr_main.HitNormal, tr_main.HitPos - tr_main.HitNormal)
-                -- do a bullet just to make blood decals work sanely
-                -- need to disable lagcomp because firebullets does its own
+                self.Weapon:EmitSound("PrismSword.HitFleshSlash")
                 self:GetOwner():LagCompensation(false)
                 self:GetOwner():FireBullets({
                     Num = 1,
@@ -354,10 +359,10 @@ function SWEP:PrimaryAttack()
                 })
             else
                 util.Effect("Impact", edata)
+                self.Weapon:EmitSound("PrismSword.HitWall")
             end
         end
     else
-        -- Randomly choose an animation for a miss
         if rand == 1 then
             self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
         elseif rand == 2 then
@@ -370,7 +375,6 @@ function SWEP:PrimaryAttack()
     end
 
     if CLIENT then
-        -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
         tr_all = util.TraceLine({
             start = spos,
@@ -380,11 +384,7 @@ function SWEP:PrimaryAttack()
 
         self:GetOwner():SetAnimation(PLAYER_ATTACK1)
         if hitEnt and hitEnt:IsValid() then
-            if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
-                -- See if there's a nodraw thing we should open
-                self:OpenEnt(tr_all.Entity)
-            end
-
+            if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then self:OpenEnt(tr_all.Entity) end
             local dmg = DamageInfo()
             dmg:SetDamage(self.Primary.Damage)
             dmg:SetAttacker(self:GetOwner())
@@ -393,16 +393,7 @@ function SWEP:PrimaryAttack()
             dmg:SetDamagePosition(self:GetOwner():GetPos())
             dmg:SetDamageType(DMG_CLUB)
             hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
-            --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-            --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
-            --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
         else
-            --         if tr_main.HitWorld then
-            --            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-            --         else
-            --            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
-            --         end
-            -- See if our nodraw trace got the goods
             if tr_all.Entity and tr_all.Entity:IsValid() then self:OpenEnt(tr_all.Entity) end
         end
     end
@@ -421,18 +412,17 @@ function SWEP:SecondaryAttack()
         local ply = tr.Entity
         if SERVER and (not ply:IsFrozen()) then
             local pushvel = tr.Normal * GetConVar("ttt_crowbar_pushforce"):GetFloat()
-            -- limit the upward force to prevent launching
             pushvel.z = math.Clamp(pushvel.z, 50, 100)
             ply:SetVelocity(ply:GetVelocity() + pushvel)
             self:GetOwner():SetAnimation(PLAYER_ATTACK1)
             ply.was_pushed = {
-                att = self:GetOwner(), --, infl=self}
+                att = self:GetOwner(),
                 t = CurTime(),
                 wep = self:GetClass()
             }
         end
 
-        --self.Weapon:EmitSound(sound_single)
+        if CLIENT and owner:ShouldDrawLocalPlayer() then self.Weapon:EmitSound(sound_single) end
         self.Weapon:SendWeaponAnim(ACT_VM_MISSLEFT)
         owner:SetAnimation(PLAYER_ATTACK1)
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
