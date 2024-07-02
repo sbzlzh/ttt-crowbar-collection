@@ -1,30 +1,23 @@
 -- Bloodstream effect
 -- Made by Archemyde
 -- For Realistic Chainsaw
-
 util.PrecacheSound("physics/flesh/flesh_bloody_impact_hard1.wav")
 util.PrecacheSound("physics/flesh/flesh_squishy_impact_hard1.wav")
 util.PrecacheSound("physics/flesh/flesh_squishy_impact_hard2.wav")
 util.PrecacheSound("physics/flesh/flesh_squishy_impact_hard3.wav")
 util.PrecacheSound("physics/flesh/flesh_squishy_impact_hard4.wav")
-
 local function CollideCallback(particle, hitpos, hitnormal)
     if not particle.HitAlready then
         particle.HitAlready = true
-
         local pos = hitpos + hitnormal
-
         util.Decal("Blood", pos, hitpos - hitnormal)
-
         particle:SetDieTime(0)
     end
 end
 
 function EFFECT:Init(data)
     local Pos = data:GetOrigin() + Vector(0, 0, 10)
-
     local emitter = ParticleEmitter(Pos)
-
     for i = 1, data:GetMagnitude() do
         local particle = emitter:Add("decals/blood" .. math.random(1, 8), Pos + VectorRand() * 8)
         particle:SetDieTime(math.Rand(3, 6))

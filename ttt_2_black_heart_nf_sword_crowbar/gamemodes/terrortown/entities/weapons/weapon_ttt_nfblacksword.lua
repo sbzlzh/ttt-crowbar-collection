@@ -4,64 +4,49 @@ if SERVER then
 end
 
 if CLIENT then
-    SWEP.PrintName     = "Black Heart NF Sword"
-
-    SWEP.Slot          = 0
-    SWEP.Weight        = 5
+    SWEP.PrintName = "Black Heart NF Sword"
+    SWEP.Slot = 0
+    SWEP.Weight = 5
     SWEP.WepSelectIcon = surface.GetTextureID("effects/killicons/weapon_blackheartsword")
-
-
     killicon.Add("weapon_nfblacksword", "effects/killicons/weapon_blackheartsword", color_white)
-
-    SWEP.Icon         = "effects/killicons/weapon_blackheartsword"
-
+    SWEP.Icon = "effects/killicons/weapon_blackheartsword"
     SWEP.ViewModelFOV = 75
 end
 
-SWEP.HoldType              = "melee2"
-
-SWEP.UseHands              = true
-
-SWEP.Base                  = "weapon_tttbase"
-
-SWEP.ViewModel             = "models/weapons/v_NF_Black_sword2.mdl"
-SWEP.WorldModel            = "models/weapons/w_NF_Black_sword11.mdl"
-
-SWEP.DrawCrosshair         = false
-SWEP.ViewModelFlip         = false
-
-SWEP.Primary.Sound         = Sound("common/null.wav")
-
-SWEP.Primary.Damage        = 20
-SWEP.Primary.ClipSize      = -1
-SWEP.Primary.DefaultClip   = -1
-SWEP.Primary.Automatic     = true
-SWEP.Primary.Delay         = 0.5
-SWEP.Primary.Ammo          = "none"
-
-SWEP.Secondary.ClipSize    = -1
+SWEP.HoldType = "melee2"
+SWEP.UseHands = true
+SWEP.Base = "weapon_tttbase"
+SWEP.ViewModel = "models/weapons/v_NF_Black_sword2.mdl"
+SWEP.WorldModel = "models/weapons/w_NF_Black_sword11.mdl"
+SWEP.DrawCrosshair = false
+SWEP.ViewModelFlip = false
+SWEP.Primary.Sound = Sound("common/null.wav")
+SWEP.Primary.Damage = 20
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
+SWEP.Primary.Automatic = true
+SWEP.Primary.Delay = 0.5
+SWEP.Primary.Ammo = "none"
+SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
-SWEP.Secondary.Automatic   = true
-SWEP.Secondary.Ammo        = "none"
-SWEP.Secondary.Delay       = 5
+SWEP.Secondary.Automatic = true
+SWEP.Secondary.Ammo = "none"
+SWEP.Secondary.Delay = 5
+SWEP.Kind = WEAPON_MELEE
+SWEP.WeaponID = AMMO_CROWBAR
+SWEP.InLoadoutFor = {
+    nil --{ ROLE_TRAITOR,ROLE_DETECTIVE,ROLE_INNOCENT }
+}
 
-SWEP.Kind                  = WEAPON_MELEE
-SWEP.WeaponID              = AMMO_CROWBAR
-
-SWEP.InLoadoutFor          = { nil } --{ ROLE_TRAITOR,ROLE_DETECTIVE,ROLE_INNOCENT }
-SWEP.NoSights              = true
-SWEP.IsSilent              = true
-
-SWEP.InspectPos            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights position, to be used for inspection
-SWEP.InspectAng            = Vector(0, 0, 0) --Replace with a vector, in style of ironsights angle, to be used for inspection
-
-SWEP.InspectionLoop        = true            --Setting false will cancel inspection once the animation is done.  CS:GO style.
-SWEP.AllowDelete           = false           -- never removed for weapon reduction
-SWEP.AllowDrop             = false
-
-local sound_single         = Sound("Weapon_Crowbar.Single")
-local sound_open           = Sound("DoorHandles.Unlocked3")
-
+SWEP.NoSights = true
+SWEP.IsSilent = true
+SWEP.InspectPos = Vector(0, 0, 0) --Replace with a vector, in style of ironsights position, to be used for inspection
+SWEP.InspectAng = Vector(0, 0, 0) --Replace with a vector, in style of ironsights angle, to be used for inspection
+SWEP.InspectionLoop = true --Setting false will cancel inspection once the animation is done.  CS:GO style.
+SWEP.AllowDelete = false -- never removed for weapon reduction
+SWEP.AllowDrop = false
+local sound_single = Sound("Weapon_Crowbar.Single")
+local sound_open = Sound("DoorHandles.Unlocked3")
 if SERVER then
     CreateConVar("ttt_crowbar_unlocks", "1", FCVAR_ARCHIVE)
     CreateConVar("ttt_crowbar_pushforce", "395", FCVAR_NOTIFY)
@@ -87,7 +72,6 @@ local function OpenableEnt(ent)
     end
 end
 
-
 local function CrowbarCanUnlock(t)
     return not GAMEMODE.crowbar_unlocks or GAMEMODE.crowbar_unlocks[t]
 end
@@ -97,17 +81,11 @@ function SWEP:OpenEnt(hitEnt)
     -- Get ready for some prototype-quality code, all ye who read this
     if SERVER and GetConVar("ttt_crowbar_unlocks"):GetBool() then
         local openable = OpenableEnt(hitEnt)
-
         if openable == OPEN_DOOR or openable == OPEN_ROT then
             local unlock = CrowbarCanUnlock(openable)
-            if unlock then
-                hitEnt:Fire("Unlock", nil, 0)
-            end
-
+            if unlock then hitEnt:Fire("Unlock", nil, 0) end
             if unlock or hitEnt:HasSpawnFlags(256) then
-                if openable == OPEN_ROT then
-                    hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
-                end
+                if openable == OPEN_ROT then hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0) end
                 hitEnt:Fire("Toggle", nil, 0)
             else
                 return OPEN_NO
@@ -134,27 +112,29 @@ end
 
 function SWEP:PrimaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
     if not IsValid(self:GetOwner()) then return end
-
     if self:GetOwner().LagCompensation then -- for some reason not always true
         self:GetOwner():LagCompensation(true)
     end
 
     local spos = self:GetOwner():GetShootPos()
     local sdest = spos + (self:GetOwner():GetAimVector() * 100)
+    local tr_main = util.TraceLine({
+        start = spos,
+        endpos = sdest,
+        filter = self:GetOwner(),
+        mask = MASK_SHOT_HULL
+    })
 
-    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
     local hitEnt = tr_main.Entity
-
-
-
+    owner:SetAnimation(PLAYER_ATTACK1)
     if IsValid(hitEnt) or tr_main.HitWorld then
         if math.random() < 0.5 then
             self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
         else
             self.Weapon:SendWeaponAnim(ACT_VM_HITRIGHT)
         end
+
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
             self.Owner:EmitSound("weapons/samurai/tf_katana_impact_object_0" .. math.random(1, 3) .. ".wav")
@@ -165,13 +145,10 @@ function SWEP:PrimaryAttack()
             edata:SetHitBox(tr_main.HitBox)
             --edata:SetDamageType(DMG_CLUB)
             edata:SetEntity(hitEnt)
-
             if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
                 util.Effect("BloodImpact", edata)
-
                 -- does not work on players rah
                 --util.Decal("Blood", tr_main.HitPos + tr_main.HitNormal, tr_main.HitPos - tr_main.HitNormal)
-
                 -- do a bullet just to make blood decals work sanely
                 -- need to disable lagcomp because firebullets does its own
                 self:GetOwner():LagCompensation(false)
@@ -197,16 +174,16 @@ function SWEP:PrimaryAttack()
         end
     end
 
-
     if CLIENT then
-        -- used to be some shit here
-    else -- SERVER
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
-        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner() })
+        tr_all = util.TraceLine({
+            start = spos,
+            endpos = sdest,
+            filter = self:GetOwner()
+        })
 
         self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-
         if hitEnt and hitEnt:IsValid() then
             if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
                 -- See if there's a nodraw thing we should open
@@ -220,11 +197,8 @@ function SWEP:PrimaryAttack()
             dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
             dmg:SetDamagePosition(self:GetOwner():GetPos())
             dmg:SetDamageType(DMG_CLUB)
-
             hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
-
             --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-
             --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
             --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
         else
@@ -233,53 +207,41 @@ function SWEP:PrimaryAttack()
             --         else
             --            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
             --         end
-
             -- See if our nodraw trace got the goods
-            if tr_all.Entity and tr_all.Entity:IsValid() then
-                self:OpenEnt(tr_all.Entity)
-            end
+            if tr_all.Entity and tr_all.Entity:IsValid() then self:OpenEnt(tr_all.Entity) end
         end
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
-    end
+    if self:GetOwner().LagCompensation then self:GetOwner():LagCompensation(false) end
 end
 
 function SWEP:SecondaryAttack()
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
     self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
-
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(true)
-    end
-
+    if self:GetOwner().LagCompensation then self:GetOwner():LagCompensation(true) end
     local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
-
     if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
         local ply = tr.Entity
-
         if SERVER and (not ply:IsFrozen()) then
             local pushvel = tr.Normal * GetConVar("ttt_crowbar_pushforce"):GetFloat()
-
             -- limit the upward force to prevent launching
             pushvel.z = math.Clamp(pushvel.z, 50, 100)
-
             ply:SetVelocity(ply:GetVelocity() + pushvel)
             self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-
-            ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
+            ply.was_pushed = {
+                att = self:GetOwner(), --, infl=self}
+                t = CurTime(),
+                wep = self:GetClass()
+            }
         end
 
         self:EmitSound("weapons/samurai/tf_katana_0" .. math.random(1, 6) .. ".wav")
         self.Weapon:SendWeaponAnim(ACT_VM_SWINGHARD)
-
+        owner:SetAnimation(PLAYER_ATTACK1)
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
-    end
+    if self:GetOwner().LagCompensation then self:GetOwner():LagCompensation(false) end
 end
 
 function SWEP:GetClass()
