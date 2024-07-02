@@ -346,7 +346,7 @@ function SWEP:PrimaryAttack()
             edata:SetEntity(hitEnt)
             if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
                 util.Effect("BloodImpact", edata)
-                self.Weapon:EmitSound("PrismSword.HitFleshSlash")
+                self:GetOwner():EmitSound("PrismSword.HitFleshSlash")
                 self:GetOwner():LagCompensation(false)
                 self:GetOwner():FireBullets({
                     Num = 1,
@@ -359,7 +359,7 @@ function SWEP:PrimaryAttack()
                 })
             else
                 util.Effect("Impact", edata)
-                self.Weapon:EmitSound("PrismSword.HitWall")
+                self:GetOwner():EmitSound("PrismSword.HitWall")
             end
         end
     else
