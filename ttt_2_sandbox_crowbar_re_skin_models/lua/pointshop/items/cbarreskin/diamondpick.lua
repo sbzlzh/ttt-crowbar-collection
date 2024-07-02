@@ -3,7 +3,6 @@ ITEM.Price = 5000
 ITEM.Material = 'materials/pointshop/mcpickaxe.png'
 ITEM.SingleUse = false
 ITEM.WeaponClass = 'weapon_diamond_pick'
-
 function ITEM:OnEquip(ply)
     ply:StripWeapon('weapon_zm_improvised')
     ply:Give(self.WeaponClass)

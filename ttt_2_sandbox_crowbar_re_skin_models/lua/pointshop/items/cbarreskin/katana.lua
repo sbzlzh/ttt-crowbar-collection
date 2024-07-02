@@ -3,7 +3,6 @@ ITEM.Price = 5000
 ITEM.Material = 'materials/pointshop/sword.png'
 ITEM.SingleUse = false
 ITEM.WeaponClass = 'weapon_katana'
-
 function ITEM:OnEquip(ply)
     ply:StripWeapon('weapon_zm_improvised')
     ply:Give(self.WeaponClass)
