@@ -117,6 +117,7 @@ function SWEP:PrimaryAttack()
 
     local hitEnt = tr_main.Entity
     self.Weapon:EmitSound(sound_single)
+    owner:SetAnimation(PLAYER_ATTACK1)
     if IsValid(hitEnt) or tr_main.HitWorld then
         self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
         if not (CLIENT and (not IsFirstTimePredicted())) then
@@ -153,8 +154,6 @@ function SWEP:PrimaryAttack()
     end
 
     if CLIENT then
-        -- used to be some shit here
-    else -- SERVER
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
         tr_all = util.TraceLine({
@@ -216,6 +215,7 @@ function SWEP:SecondaryAttack()
 
         self.Weapon:EmitSound(sound_single)
         self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+        owner:SetAnimation(PLAYER_ATTACK1)
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
 
