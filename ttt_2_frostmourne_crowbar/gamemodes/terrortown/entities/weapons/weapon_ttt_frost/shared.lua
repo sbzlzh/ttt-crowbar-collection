@@ -205,6 +205,7 @@ function SWEP:SecondaryAttack()
     self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
     if self:GetOwner().LagCompensation then self:GetOwner():LagCompensation(true) end
     local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
+    local owner = self:GetOwner()
     if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
         local ply = tr.Entity
         if SERVER and (not ply:IsFrozen()) then

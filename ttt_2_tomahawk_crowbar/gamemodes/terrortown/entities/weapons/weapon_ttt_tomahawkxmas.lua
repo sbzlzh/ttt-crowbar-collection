@@ -268,7 +268,6 @@ function SWEP:PrimaryAttack()
     if self:GetOwner().LagCompensation then -- for some reason not always true
         self:GetOwner():LagCompensation(true)
     end
-
     local spos = self:GetOwner():GetShootPos()
     local sdest = spos + (self:GetOwner():GetAimVector() * 100)
     local rand = math.random(1, 2)
