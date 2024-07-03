@@ -105,7 +105,7 @@ function SWEP:PrimaryAttack()
     if self.Owner.LagCompensation then -- for some reason not always true
         self.Owner:LagCompensation(true)
     end
-
+    local owner = self:GetOwner()
     local spos = self.Owner:GetShootPos()
     local sdest = spos + (self.Owner:GetAimVector() * 70)
     local tr_main = util.TraceLine({

@@ -121,7 +121,6 @@ function SWEP:PrimaryAttack()
 
     local hitEnt = tr_main.Entity
     self.Weapon:EmitSound("weapons/knife/knife_slash1.wav", 100, math.random(90, 120))
-    owner:SetAnimation(PLAYER_ATTACK1)
     if IsValid(hitEnt) or tr_main.HitWorld then
         self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
         if not (CLIENT and (not IsFirstTimePredicted())) then
@@ -205,6 +204,7 @@ function SWEP:SecondaryAttack()
     self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
     if self.Owner.LagCompensation then self.Owner:LagCompensation(true) end
     local tr = self.Owner:GetEyeTrace(MASK_SHOT)
+    local owner = self:GetOwner()
     if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self.Owner:EyePos() - tr.HitPos):Length() < 100 then
         local ply = tr.Entity
         if SERVER and (not ply:IsFrozen()) then
@@ -222,7 +222,6 @@ function SWEP:SecondaryAttack()
 
         self.Weapon:EmitSound(sound_single)
         self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
-        owner:SetAnimation(PLAYER_ATTACK1)
         self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
 
