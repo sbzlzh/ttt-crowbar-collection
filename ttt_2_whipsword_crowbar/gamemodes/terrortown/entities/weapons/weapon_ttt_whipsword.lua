@@ -301,16 +301,6 @@ function SWEP:PrimaryAttack()
     end
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        if SERVER then
-            local dmg = DamageInfo()
-            dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(owner)
-            dmg:SetInflictor(self)
-            dmg:SetDamageForce(owner:GetAimVector() * 1500)
-            dmg:SetDamageType(DMG_SLASH)
-            hitEnt:TakeDamageInfo(dmg)
-        end
-
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
             edata:SetStart(spos)
@@ -347,7 +337,7 @@ function SWEP:PrimaryAttack()
         end
     end
 
-    if CLIENT then
+    if SERVER then
         local tr_all = nil
         tr_all = util.TraceLine({
             start = spos,

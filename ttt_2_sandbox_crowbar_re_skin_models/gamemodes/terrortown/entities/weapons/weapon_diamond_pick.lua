@@ -155,7 +155,7 @@ function SWEP:PrimaryAttack()
         self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
     end
 
-    if CLIENT then
+    if SERVER then
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
         tr_all = util.TraceLine({

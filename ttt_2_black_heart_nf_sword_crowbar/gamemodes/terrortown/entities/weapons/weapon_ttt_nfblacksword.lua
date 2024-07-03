@@ -174,7 +174,7 @@ function SWEP:PrimaryAttack()
         end
     end
 
-    if CLIENT then
+    if SERVER then
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
         tr_all = util.TraceLine({
